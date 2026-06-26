@@ -1,3 +1,24 @@
-.env
-output/
+# Python
 __pycache__/
+*.py[cod]
+*.pyo
+
+# Environment
+.env
+
+# VS Code
+.vscode/
+
+# Build
+dist/
+build/
+
+# Exported solutions
+output/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# config
+config.py
