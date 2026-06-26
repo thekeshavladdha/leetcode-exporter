@@ -8,8 +8,7 @@ from leetcode_api import (
 )
 
 def main():
-    
-    print("Inside main")
+
     problems = get_solved_problems()
 
     print(f"\nFound {len(problems)} solved problems.\n")
@@ -61,14 +60,17 @@ def main():
             print(f"      Failed to export '{problem['title']}'")
             print(f"      Reason: {e}\n")
 
+    
+    create_root_readme(summary)
+    print("Root README generated!")
+    
     print("\n" + "=" * 50)
     print("Export Complete!")
     print("=" * 50)
     print(f"Successfully exported : {success}")
     print(f"Failed               : {failed}")
     print(f"Total                : {success + failed}")
-    create_root_readme(summary)
-    print("Root README generated!")
+    
     
 if __name__ == "__main__":
     main()
