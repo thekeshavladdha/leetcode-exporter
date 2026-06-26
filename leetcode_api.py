@@ -1,4 +1,5 @@
 import json
+import os
 import requests
 from config import LEETCODE_SESSION, CSRFTOKEN
 
@@ -153,21 +154,31 @@ def get_solved_problems():
 
     return solved
 
-import os
-
-import os
-import json
-
-def save_solution(problem, details, problem_data):
+def get_folder_name(problem):
 
     folder_name = f'{problem["id"]:04d}-{problem["title"]}'
     folder_name = folder_name.replace(" ", "-")
 
     invalid = '<>:"/\\|?*'
+
     for ch in invalid:
         folder_name = folder_name.replace(ch, "")
 
-    path = os.path.join("output", folder_name)
+    return folder_name
+
+def get_problem_path(problem):
+
+    return os.path.join(
+        "output",
+        get_folder_name(problem),
+    )
+
+
+def save_solution(problem, details, problem_data):
+
+    folder_name = get_folder_name(problem)
+
+    path = get_problem_path(problem)
 
     os.makedirs(path, exist_ok=True)
 
@@ -227,6 +238,14 @@ def save_solution(problem, details, problem_data):
         "difficulty": difficulty_map.get(problem["difficulty"], "Unknown"),
     }
 
+def already_exported(problem):
+
+    folder_name = get_folder_name(problem)
+
+    path = get_problem_path(problem)
+
+    return os.path.exists(path)
+
 def create_readme(path, metadata):
 
     with open(
@@ -251,6 +270,42 @@ def create_readme(path, metadata):
         else:
             f.write("No tags available.\n")
 
+def get_summary():
+
+    summary = []
+
+    output_path = "output"
+
+    if not os.path.exists(output_path):
+        return summary
+
+    for folder in os.listdir(output_path):
+
+        metadata_path = os.path.join(
+            output_path,
+            folder,
+            "metadata.json",
+        )
+
+        if not os.path.exists(metadata_path):
+            continue
+
+        with open(metadata_path, "r", encoding="utf-8") as f:
+            metadata = json.load(f)
+
+        summary.append(
+            {
+                "id": metadata["id"],
+                "title": metadata["title"],
+                "difficulty": metadata["difficulty"],
+                "language": metadata["language"],
+                "folder": folder,
+            }
+        )
+
+    summary.sort(key=lambda x: x["id"])
+
+    return summary
 def create_root_readme(summary):
 
     easy = 0
@@ -307,5 +362,5 @@ def create_root_readme(summary):
             f"| {language} |\n"
         )
 
-    with open("README.md", "w", encoding="utf-8") as f:
+    with open(os.path.join("output", "README.md"), "w", encoding="utf-8") as f:
         f.write(content)
