@@ -130,8 +130,8 @@ Each exported problem contains its own README with:
 - [x] README generation
 - [x] Root README generation
 - [x] Tags support
-- [ ] Incremental export
-- [ ] Progress bar
+- [x] Incremental export
+- [x] Progress bar
 - [ ] CLI arguments
 - [ ] GitHub Actions
 - [ ] PyPI package
@@ -140,8 +140,4 @@ Each exported problem contains its own README with:
 
 ## License
 
-<<<<<<< HEAD
 MIT License
-=======
-MIT License
->>>>>>> 42e2f43 (Added Progress Bar and added optimizations to skip already exported codes!)
