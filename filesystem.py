@@ -1,6 +1,6 @@
 import os
 import json
-
+from markdown import create_readme
 
 
 def get_folder_name(problem):
@@ -93,3 +93,39 @@ def already_exported(problem):
     path = get_problem_path(problem)
 
     return os.path.exists(path)
+def get_summary():
+
+    summary = []
+
+    output_path = "output"
+
+    if not os.path.exists(output_path):
+        return summary
+
+    for folder in os.listdir(output_path):
+
+        metadata_path = os.path.join(
+            output_path,
+            folder,
+            "metadata.json",
+        )
+
+        if not os.path.exists(metadata_path):
+            continue
+
+        with open(metadata_path, "r", encoding="utf-8") as f:
+            metadata = json.load(f)
+
+        summary.append(
+            {
+                "id": metadata["id"],
+                "title": metadata["title"],
+                "difficulty": metadata["difficulty"],
+                "language": metadata["language"],
+                "folder": folder,
+            }
+        )
+
+    summary.sort(key=lambda x: x["id"])
+
+    return summary
