@@ -1,0 +1,95 @@
+import os
+import json
+
+
+
+def get_folder_name(problem):
+
+    folder_name = f'{problem["id"]:04d}-{problem["title"]}'
+    folder_name = folder_name.replace(" ", "-")
+
+    invalid = '<>:"/\\|?*'
+
+    for ch in invalid:
+        folder_name = folder_name.replace(ch, "")
+
+    return folder_name
+
+def get_problem_path(problem):
+
+    return os.path.join(
+        "output",
+        get_folder_name(problem),
+    )
+
+def save_solution(problem, details, problem_data):
+
+    folder_name = get_folder_name(problem)
+
+    path = get_problem_path(problem)
+
+    os.makedirs(path, exist_ok=True)
+
+    submission = details["data"]["submissionDetails"]
+
+    if submission is None:  
+        raise Exception("Submission details unavailable.")
+
+    language = submission["lang"]["name"]
+
+    extension = {
+        "cpp": ".cpp",
+        "python3": ".py",
+        "java": ".java",
+        "javascript": ".js",
+    }.get(language.lower(), ".txt")
+
+    filename = os.path.join(path, "solution" + extension)
+
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(submission["code"])
+
+    difficulty_map = {
+        1: "Easy",
+        2: "Medium",
+        3: "Hard",
+    }
+
+    metadata = {
+        "id": problem["id"],
+        "title": problem["title"],
+        "slug": problem["slug"],
+        "difficulty": difficulty_map.get(problem["difficulty"], "Unknown"),
+        "language": language,
+        "runtime": submission["runtimeDisplay"],
+        "memory": submission["memoryDisplay"],
+        "timestamp": submission["timestamp"],
+        "tags": [
+            tag["name"]
+            for tag in problem_data["data"]["question"]["topicTags"]
+        ],
+    }
+
+    with open(
+        os.path.join(path, "metadata.json"),
+        "w",
+        encoding="utf-8",
+    ) as f:
+        json.dump(metadata, f, indent=4)
+
+    create_readme(path, metadata)
+    return {
+        "id": problem["id"],
+        "title": problem["title"],
+        "folder": folder_name,
+        "language": language,
+        "difficulty": difficulty_map.get(problem["difficulty"], "Unknown"),
+    }
+
+def already_exported(problem):
+
+    folder_name = get_folder_name(problem)
+
+    path = get_problem_path(problem)
+
+    return os.path.exists(path)
