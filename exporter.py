@@ -1,5 +1,6 @@
 from tqdm import tqdm
 from cli import parse_args
+from config import DEFAULT_OUTPUT_DIR
 from api import (
     get_solved_problems,
     get_submission_list,
@@ -17,7 +18,7 @@ from markdown import create_root_readme
 def main():
 
     args = parse_args()
-    output_dir = args.output
+    output_dir = args.output or DEFAULT_OUTPUT_DIR
 
     problems = get_solved_problems()
 

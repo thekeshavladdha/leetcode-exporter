@@ -14,9 +14,9 @@ def parse_args():
     )
 
     parser.add_argument(
+        "-o",
         "--output",
-        default="output",
-        help="Output directory (default: output).",
+        help="Output directory.",
     )
 
     parser.add_argument(
@@ -24,5 +24,7 @@ def parse_args():
         choices=["easy", "medium", "hard"],
         help="Export only problems of a certain difficulty.",
     )
+
+    
 
     return parser.parse_args()
