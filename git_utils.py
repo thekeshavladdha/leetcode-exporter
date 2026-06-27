@@ -28,3 +28,12 @@ def git_push(repo_path):
         ["push", "origin", "main"],
         repo_path,
     )
+
+def git_has_changes(repo_path):
+
+    result = run_git_command(
+        ["status", "--porcelain"],
+        repo_path,
+    )
+
+    return bool(result.stdout.strip())

@@ -17,6 +17,7 @@ from git_utils import (
     git_add,
     git_commit,
     git_push,
+    git_has_changes,
 )
 
 
@@ -107,8 +108,9 @@ def main():
     create_root_readme(summary, output_dir)
     if args.push:
 
-        if success == 0:
+        if success == 0 and not git_has_changes(output_dir):
             print("\nNo new solutions exported.")
+            print("No repository changes detected.")
             print("Skipping Git commit.")
             return
 
