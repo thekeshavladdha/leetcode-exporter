@@ -1,5 +1,5 @@
 from tqdm import tqdm
-
+from cli import parse_args
 from leetcode_api import (
     get_solved_problems,
     get_submission_list,
@@ -13,13 +13,26 @@ from leetcode_api import (
 
 
 def main():
+    args = parse_args()
 
     problems = get_solved_problems()
+
+    if args.difficulty:
+        difficulty_map = {
+            "easy": 1,
+            "medium": 2,
+            "hard": 3,
+        }
+
+        problems = [
+            p for p in problems
+            if p["difficulty"] == difficulty_map[args.difficulty]
+        ]
+
     new_problems = []
     skipped = 0
 
     for problem in problems:
-
         if already_exported(problem):
             skipped += 1
         else:
@@ -27,20 +40,19 @@ def main():
 
     print(f"\nFound {len(problems)} solved problems.")
     print(f"Already exported : {skipped}")
-    print(f"New problems     : {len(new_problems)}\n")
+    print(f"New problems     : {len(new_problems)}")
+
     if not new_problems:
-        print("Everything is already up to date.\n")
+        print("\nEverything is already up to date.")
 
     success = 0
     failed = 0
-    skipped = 0
 
     for problem in tqdm(
         new_problems,
         desc="Exporting",
         unit="problem",
     ):
-
         try:
             submissions = get_submission_list(problem["slug"])
 
