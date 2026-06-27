@@ -5,7 +5,6 @@ from api import (
     get_submission_list,
     get_submission_details,
     get_problem_data,
-    
 )
 from filesystem import (
     save_solution,
@@ -18,6 +17,7 @@ from markdown import create_root_readme
 def main():
 
     args = parse_args()
+    output_dir = args.output
 
     problems = get_solved_problems()
 
@@ -39,7 +39,7 @@ def main():
 
     for problem in problems:
 
-        if not args.force and already_exported(problem):
+        if not args.force and already_exported(problem, output_dir):
             skipped += 1
         else:
             new_problems.append(problem)
@@ -79,7 +79,12 @@ def main():
                 if details["data"]["submissionDetails"] is None:
                     raise Exception("Submission details unavailable.")
 
-                save_solution(problem, details, problem_data)
+                save_solution(
+                    problem,
+                    details,
+                    problem_data,
+                    output_dir,
+                )
 
                 success += 1
 
@@ -92,7 +97,8 @@ def main():
 
         print("\nEverything is already up to date.")
 
-    create_root_readme(get_summary())
+    summary = get_summary(output_dir)
+    create_root_readme(summary, output_dir)
 
     print("\nRoot README generated!")
 

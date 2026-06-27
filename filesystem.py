@@ -15,24 +15,26 @@ def get_folder_name(problem):
 
     return folder_name
 
-def get_problem_path(problem):
+
+def get_problem_path(problem, output_dir):
 
     return os.path.join(
-        "output",
+        output_dir,
         get_folder_name(problem),
     )
 
-def save_solution(problem, details, problem_data):
+
+def save_solution(problem, details, problem_data, output_dir):
 
     folder_name = get_folder_name(problem)
 
-    path = get_problem_path(problem)
+    path = get_problem_path(problem, output_dir)
 
     os.makedirs(path, exist_ok=True)
 
     submission = details["data"]["submissionDetails"]
 
-    if submission is None:  
+    if submission is None:
         raise Exception("Submission details unavailable.")
 
     language = submission["lang"]["name"]
@@ -78,6 +80,7 @@ def save_solution(problem, details, problem_data):
         json.dump(metadata, f, indent=4)
 
     create_readme(path, metadata)
+
     return {
         "id": problem["id"],
         "title": problem["title"],
@@ -86,26 +89,25 @@ def save_solution(problem, details, problem_data):
         "difficulty": difficulty_map.get(problem["difficulty"], "Unknown"),
     }
 
-def already_exported(problem):
 
-    folder_name = get_folder_name(problem)
+def already_exported(problem, output_dir):
 
-    path = get_problem_path(problem)
+    path = get_problem_path(problem, output_dir)
 
     return os.path.exists(path)
-def get_summary():
+
+
+def get_summary(output_dir):
 
     summary = []
 
-    output_path = "output"
-
-    if not os.path.exists(output_path):
+    if not os.path.exists(output_dir):
         return summary
 
-    for folder in os.listdir(output_path):
+    for folder in os.listdir(output_dir):
 
         metadata_path = os.path.join(
-            output_path,
+            output_dir,
             folder,
             "metadata.json",
         )

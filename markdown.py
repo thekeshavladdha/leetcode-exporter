@@ -1,5 +1,6 @@
 import os
 
+
 def create_readme(path, metadata):
 
     with open(
@@ -24,7 +25,8 @@ def create_readme(path, metadata):
         else:
             f.write("No tags available.\n")
 
-def create_root_readme(summary):
+
+def create_root_readme(summary, output_dir):
 
     easy = 0
     medium = 0
@@ -75,10 +77,14 @@ def create_root_readme(summary):
 
         content += (
             f"| {problem['id']:04d} "
-            f"| [{problem['title']}](output/{problem['folder']}) "
+            f"| [{problem['title']}]({problem['folder']}) "
             f"| {problem['difficulty']} "
             f"| {language} |\n"
         )
 
-    with open(os.path.join("output", "README.md"), "w", encoding="utf-8") as f:
+    with open(
+        os.path.join(output_dir, "README.md"),
+        "w",
+        encoding="utf-8",
+    ) as f:
         f.write(content)
