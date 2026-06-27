@@ -1,41 +1,128 @@
 # LeetCode Exporter
 
-Automatically export your accepted LeetCode submissions using the official LeetCode GraphQL API.
+> Automatically export your accepted LeetCode submissions into a well-organized GitHub repository with generated documentation, metadata, and optional Git automation.
 
-The exporter downloads your latest accepted solution for every solved problem and generates a clean folder structure containing:
+LeetCode Exporter is a Python command-line tool that automates the process of maintaining a public LeetCode solutions repository.
 
-- Source code
-- Metadata
-- Problem README
-- Root statistics README
+Instead of manually copying solutions after every accepted submission, the exporter fetches your latest accepted code directly from LeetCode, organizes it into numbered folders, generates documentation, updates the repository README, and can optionally commit and push everything to GitHub with a single command.
+
+---
+
+## Why I Built This
+
+After solving a few hundred LeetCode problems, manually maintaining a GitHub repository became repetitive and error-prone.
+
+This project was built to automate the entire workflow while keeping the exported repository clean, consistent, and easy to navigate.
 
 ---
 
 ## Features
 
-- Export all solved LeetCode problems
-- Supports multiple programming languages
-- Creates one folder per problem
-- Generates metadata.json
-- Generates README.md for every problem
-- Generates a root README with statistics
-- Stores runtime and memory usage
-- Exports problem tags
-- Handles API failures gracefully
-- Continues exporting even if one problem fails
+* Export accepted LeetCode submissions
+* Incremental exports (skip already exported problems)
+* Force re-export when needed
+* Filter exports by difficulty
+* Configurable output directory
+* Automatically generate:
+
+  * Root README
+  * Problem README
+  * Metadata for every solution
+* Automatic Git commit and push
+* Modular, extensible project structure
 
 ---
 
-## Installation
+## Example
 
-Clone the repository
+Export only new solutions:
 
 ```bash
-git clone https://github.com/thekeshavladdha/leetcode-exporter.git
-cd leetcode-exporter
+python exporter.py
 ```
 
-Install dependencies
+Export and automatically push the changes:
+
+```bash
+python exporter.py --push
+```
+
+Re-export every solution:
+
+```bash
+python exporter.py --force
+```
+
+Export only hard problems:
+
+```bash
+python exporter.py --difficulty hard
+```
+
+Use a custom output directory:
+
+```bash
+python exporter.py --output "D:\LeetCode-Solutions"
+```
+
+---
+
+## Generated Repository Structure
+
+```text
+LeetCode-Solutions/
+│
+├── README.md
+├── 0001-Two-Sum/
+│   ├── solution.cpp
+│   ├── README.md
+│   └── metadata.json
+├── 0002-Add-Two-Numbers/
+│   ├── solution.cpp
+│   ├── README.md
+│   └── metadata.json
+└── ...
+```
+
+---
+
+## Project Structure
+
+```text
+leetcode-exporter/
+│
+├── api.py
+├── cli.py
+├── config.py
+├── exporter.py
+├── filesystem.py
+├── git_utils.py
+├── markdown.py
+└── requirements.txt
+```
+
+---
+
+## Configuration
+
+Create a `config.py` file and provide your LeetCode session information.
+
+```python
+LEETCODE_SESSION = "..."
+CSRFTOKEN = "..."
+
+DEFAULT_OUTPUT_DIR = r"C:\LeetCode-Solutions"
+```
+
+---
+
+## Requirements
+
+* Python 3.10+
+* requests
+* tqdm
+
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
@@ -43,101 +130,15 @@ pip install -r requirements.txt
 
 ---
 
-## Configuration
-
-Create a `.env` file
-
-```env
-LEETCODE_SESSION=your_session_cookie
-CSRFTOKEN=your_csrf_token
-```
-
----
-
-## Usage
-
-Run
-
-```bash
-python exporter.py
-```
-
----
-
-## Output Structure
-
-```
-output/
-│
-├── 0001-Two-Sum/
-│   ├── solution.cpp
-│   ├── metadata.json
-│   └── README.md
-│
-├── 0002-Add-Two-Numbers/
-│   ├── solution.cpp
-│   ├── metadata.json
-│   └── README.md
-│
-└── ...
-```
-
----
-
-## Example Metadata
-
-```json
-{
-    "id": 1,
-    "title": "Two Sum",
-    "difficulty": "Easy",
-    "language": "cpp",
-    "runtime": "3 ms",
-    "memory": "11.8 MB",
-    "tags": [
-        "Array",
-        "Hash Table"
-    ]
-}
-```
-
----
-
-## Generated README
-
-Each exported problem contains its own README with:
-
-- Problem ID
-- Difficulty
-- Runtime
-- Memory
-- Tags
-
----
-
-## Requirements
-
-- Python 3.10+
-- requests
-- python-dotenv
-
----
-
 ## Roadmap
 
-- [x] Export accepted submissions
-- [x] Metadata generation
-- [x] README generation
-- [x] Root README generation
-- [x] Tags support
-- [x] Incremental export
-- [x] Progress bar
-- [ ] CLI arguments
-- [ ] GitHub Actions
-- [ ] PyPI package
+* [ ] Export individual problems
+* [ ] Filter by programming language
+* [ ] Improved README generation
+* [ ] Publish as a PyPI package
 
 ---
 
 ## License
 
-MIT License
+This project is licensed under the MIT License.
