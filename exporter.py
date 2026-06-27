@@ -13,6 +13,11 @@ from filesystem import (
     get_summary,
 )
 from markdown import create_root_readme
+from git_utils import (
+    git_add,
+    git_commit,
+    git_push,
+)
 
 
 def main():
@@ -100,6 +105,37 @@ def main():
 
     summary = get_summary(output_dir)
     create_root_readme(summary, output_dir)
+    if args.push:
+
+        if success == 0:
+            print("\nNo new solutions exported.")
+            print("Skipping Git commit.")
+            return
+
+        print("\nRunning Git commands...")
+
+        result = git_add(output_dir)
+
+        if result.returncode != 0:
+            print(result.stderr)
+            return
+
+        result = git_commit(
+            output_dir,
+            f"Add {success} new LeetCode solution(s)",
+        )
+
+        if result.returncode != 0:
+            print(result.stderr)
+            return
+
+        result = git_push(output_dir)
+
+        if result.returncode != 0:
+            print(result.stderr)
+            return
+
+        print("Git push completed successfully!")
 
     print("\nRoot README generated!")
 

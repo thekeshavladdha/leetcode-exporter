@@ -25,6 +25,12 @@ def parse_args():
         help="Export only problems of a certain difficulty.",
     )
 
+    parser.add_argument(
+        "--push",
+        action="store_true",
+        help="Commit and push exported solutions.",
+    )
+
     
 
     return parser.parse_args()
